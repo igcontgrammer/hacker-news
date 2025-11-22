@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import subprocess
+import webbrowser
 
 from argparse import ArgumentParser
 from dataclasses import dataclass
@@ -18,6 +19,58 @@ class HackerNewsLink:
     title: str
     page: int
 
+def _generate_txt(links: list[HackerNewsLink]):
+    output_file = Path('./output/news.txt').resolve()
+    path_url = output_file.as_uri()
+    with open(output_file, 'a') as f:
+        text = ''
+        for link in links:
+            text = text + f"""
+                Título: {link.title}
+                Link: {link.link}
+                Página: {'Principal' if link.page == 0 else {link.page}}
+                -----------------------------------------------------------------------------------
+            """
+        f.write(text)
+    print(f'Obtención finalizada! Por favor diríjase a {path_url}')
+
+def _generate_html(links: list[HackerNewsLink]):
+    output_file = Path('./output/index.html').resolve()
+    path_url = output_file.as_uri()
+    loader = FileSystemLoader(TEMPLATES_DIR)
+    env = Environment(loader=loader)
+    template = env.get_template('index.html')
+
+    context = {
+      'title': 'Hacker News Web Scrapper',
+      'items': links
+    }
+
+    html_rendered = template.render(context)
+
+    try:
+        with open(output_file, 'w', encoding='utf-8') as f:
+            f.write(html_rendered)
+
+            webbrowser.open_new_tab(path_url)
+
+            # webbrowser.open_new(url)
+        print(f'Reporte HTML generado con éxito! Diríjase a: ./output/index.html')
+            
+    except Exception as e:
+        print(str(e))
+
+def print_help():
+    message = """
+
+    Comandos disponibles:
+
+    -p [n] donde N es el número de páginas que se desea buscar
+    -f [txt|html] por defecto es .txt
+    --clear para limpiar la carpeta output/ de búsquedas anteriores
+
+    """
+
 def main():
 
     parser = ArgumentParser()
@@ -29,11 +82,18 @@ def main():
     number_of_pages = args.p
     output_format = args.f
     clear_output = args.clear
+    help_output = args.help
 
     if clear_output:
         try:
-            subprocess.run(['rm', '-rf', './output/*'], shell=True, check=True, capture_output=True)
+            subprocess.run(
+                'rm -rf ./output/*', 
+                shell=True, 
+                check=True, 
+                capture_output=True
+            )
             print('carpeta output limpia')
+            return None
         except Exception as e:
             print(str(e))
         return None
@@ -43,7 +103,7 @@ def main():
     if output_format is None:
         output_format = 'txt'
     if output_format not in ['txt', 'html']:
-        print('Debe ser formato txt o html')
+        print_help()
         return None
 
     page_counter = 0
@@ -70,43 +130,11 @@ def main():
     driver.quit()
 
     if output_format == 'txt':
-        output_file = Path('./output/news.txt').resolve()
-        path_url = output_file.as_uri()
-        with open(output_file, 'a') as f:
-            text = ''
-            for link in links:
-                text = text + f"""
-                    Título: {link.title}
-                    Link: {link.link}
-                    Página: {'Principal' if link.page == 0 else {link.page}}
-                    -----------------------------------------------------------------------------------
-                """
-            f.write(text)
-
-        print(f'Obtención finalizada! Por favor diríjase a {path_url}')
+        _generate_txt(links)
     elif output_format == 'html':
-        output_file = Path('./output/index.html').resolve()
-        path_url = output_file.as_uri()
-        loader = FileSystemLoader(TEMPLATES_DIR)
-        env = Environment(loader=loader)
-        template = env.get_template('index.html')
-
-        context = {
-          'title': 'titulo prueba',
-          'items': links
-        }
-
-        html_rendered = template.render(context)
-
-        try:
-            with open(output_file, 'w', encoding='utf-8') as f:
-                f.write(html_rendered)
-            print(f'Reporte HTML generado con éxito! Diríjase a: ./output/index.html')
-                
-        except Exception as e:
-            print(str(e))
+        _generate_html(links)
     else:
-        print('Formato desconocido...')
+        print_help()
         return None
     
 if __name__ == "__main__":

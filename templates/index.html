@@ -48,16 +48,12 @@
             </tr>
         </thead>
         <tbody>
-        {# Iteramos sobre la lista de objetos #}
         {% for item in items %}
             <tr>
-                {# Columna 1: Título #}
                 <td><strong>{{ item.title }}</strong></td>
                 
-                {# Columna 2: Enlace (como hipervínculo clicable) #}
                 <td><a href="{{ item.link }}" target="_blank">{{ item.link }}</a></td>
                 
-                {# Columna 3: Página, usando la lógica para mostrar "Principal" si es 0 #}
                 <td>
                     {% if item.page == 0 %}
                         Principal
