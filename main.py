@@ -52,7 +52,6 @@ def main():
     with open('./output/news.txt', 'a') as f:
         text = ''
         for link in links:
-            # text = text + f'Titulo: {link.title} | Link: {link.link} | Página: {link.page} \n'
             text = text + f"""
                 Título: {link.title}
                 Link: {link.link}
