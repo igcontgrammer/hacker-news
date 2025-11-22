@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { 
+            width: 80%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra suave */
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 12px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #007bff; /* Color de fondo azul para el encabezado */
+            color: white; 
+            text-transform: uppercase;
+        }
+        /* Estilo para filas impares (cebreado) */
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        /* Efecto hover */
+        tr:hover {
+            background-color: #e9ecef;
+        }
+        .link-column {
+            width: 40%; /* Ajusta el ancho de la columna del enlace */
+        }
+    </style>
+</head>
+<body>
+    <h1>Reporte de Enlaces: {{ title }}</h1>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Título</th>
+                <th class="link-column">Enlace</th>
+                <th>Página</th>
+            </tr>
+        </thead>
+        <tbody>
+        {# Iteramos sobre la lista de objetos #}
+        {% for item in items %}
+            <tr>
+                {# Columna 1: Título #}
+                <td><strong>{{ item.title }}</strong></td>
+                
+                {# Columna 2: Enlace (como hipervínculo clicable) #}
+                <td><a href="{{ item.link }}" target="_blank">{{ item.link }}</a></td>
+                
+                {# Columna 3: Página, usando la lógica para mostrar "Principal" si es 0 #}
+                <td>
+                    {% if item.page == 0 %}
+                        Principal
+                    {% else %}
+                        Página {{ item.page }}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
