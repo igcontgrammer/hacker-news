@@ -82,7 +82,6 @@ def main():
     number_of_pages = args.p
     output_format = args.f
     clear_output = args.clear
-    help_output = args.help
 
     if clear_output:
         try:

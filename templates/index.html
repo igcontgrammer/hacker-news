@@ -6,33 +6,123 @@
     <title>{{ title }}</title>
     
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
         table { 
-            width: 80%; 
-            border-collapse: collapse; 
-            margin-top: 20px; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra suave */
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            table-layout: fixed;
         }
-        th, td { 
-            border: 1px solid #ddd; 
-            padding: 12px; 
-            text-align: left; 
+
+        thead {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        th { 
-            background-color: #007bff; /* Color de fondo azul para el encabezado */
-            color: white; 
+
+        th {
+            color: white;
+            font-weight: 600;
             text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            padding: 16px;
+            text-align: left;
         }
-        /* Estilo para filas impares (cebreado) */
-        tr:nth-child(even) {
-            background-color: #f2f2f2;
+
+        td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #f0f0f0;
+            color: #333;
+            font-size: 0.95rem;
         }
-        /* Efecto hover */
-        tr:hover {
-            background-color: #e9ecef;
+
+        tbody tr {
+            transition: background-color 0.2s ease;
         }
+
+        tbody tr:hover {
+            background-color: #f8f9ff;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
         .link-column {
-            width: 40%; /* Ajusta el ancho de la columna del enlace */
+            width: 300px;
+        }
+
+        .link-cell-content {
+            display: block;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .link-cell-content:hover {
+            color: #764ba2;
+            text-decoration: underline;
+        }
+
+        .page-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: #e8eaf6;
+            color: #5e35b1;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .page-badge.principal {
+            background: #fce4ec;
+            color: #c2185b;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            table {
+                width: 100%;
+            }
+
+            th, td {
+                padding: 10px;
+                font-size: 0.85rem;
+            }
+
+            .link-column {
+                width: 200px;
+            }
         }
     </style>
 </head>
@@ -51,14 +141,19 @@
         {% for item in items %}
             <tr>
                 <td><strong>{{ item.title }}</strong></td>
-                
-                <td><a href="{{ item.link }}" target="_blank">{{ item.link }}</a></td>
-                
+                <td class="link-column">
+                    <a href="{{ item.link }}" 
+                       target="_blank" 
+                       class="link-cell-content"
+                       title="{{ item.link }}">
+                        {{ item.link }}
+                    </a>
+                </td>
                 <td>
                     {% if item.page == 0 %}
-                        Principal
+                        <span class="page-badge principal">Principal</span>
                     {% else %}
-                        Página {{ item.page }}
+                        <span class="page-badge">Página {{ item.page }}</span>
                     {% endif %}
                 </td>
             </tr>
