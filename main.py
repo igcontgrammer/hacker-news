@@ -70,6 +70,7 @@ def print_help():
     --clear para limpiar la carpeta output/ de búsquedas anteriores
 
     """
+    print(message)
 
 def main():
 
